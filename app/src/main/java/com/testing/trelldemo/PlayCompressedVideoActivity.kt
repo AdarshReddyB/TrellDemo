@@ -42,8 +42,6 @@ class PlayCompressedVideoActivity : AppCompatActivity() {
     }
 
     private fun releasePlayer() {
-        if (activityPlayCompressedVideoBinding.videoView.isPlaying!!) {
-            activityPlayCompressedVideoBinding.videoView.stopPlayback()
-        }
+        activityPlayCompressedVideoBinding.videoView.stopPlayback()
     }
 }

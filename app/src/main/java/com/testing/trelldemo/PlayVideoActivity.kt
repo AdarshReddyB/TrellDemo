@@ -2,10 +2,10 @@ package com.testing.trelldemo
 
 import android.Manifest
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.MediaController
@@ -40,7 +40,7 @@ class PlayVideoActivity : AppCompatActivity() {
             initializePlayer()
         }
         activityPlayVideoBinding.buttonCompress.setOnClickListener {
-            compressVideo()
+            createDirectoryAndContinue()
         }
     }
 
@@ -115,7 +115,7 @@ class PlayVideoActivity : AppCompatActivity() {
         }
     }
 
-    private fun compressVideo() {
+    private fun createDirectoryAndContinue() {
 
         val split = path.split("/")
         val relativeFileName = split[split.lastIndex]
@@ -134,14 +134,28 @@ class PlayVideoActivity : AppCompatActivity() {
         if (fileName == null) {
             return
         }
+        compressVideoToPath(fileName)
+    }
+
+    //If there is any input in bitrate it converts into that bitrate.
+    // Else library will take standard input video bitrate as 420kbps and audio bitrate as 128kbps
+    private fun compressVideoToPath(fileName: File?) {
 
         activityPlayVideoBinding.progressBar.visibility = View.VISIBLE
+        var enteredBitrate = activityPlayVideoBinding.editTextBitrate.text.toString()
+        var bitrate:Int
+
+        bitrate = if(!TextUtils.isEmpty(enteredBitrate)){
+            Integer.valueOf(enteredBitrate)
+        } else {
+            420
+        }
+
         //Compress video using library
         CompressVideoBuilder.with(this)
             .setInput(path)
             .setOutputPath(fileName?.absolutePath.toString())
-            .setApproximateVideoSizeMb(10)
-            //.setCustomBitrate(128000, 450000)
+            .setCustomBitrate(128, bitrate)
             .execute({ result -> onResultCompressVideo(result) },
                 { error -> onError(error) },
                 { progress -> onProgress(progress) })

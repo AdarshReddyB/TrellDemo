@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 // MEDIA GALLERY
                 var selectedVideoPath = getPath(selectedImageUri)
                 if (selectedVideoPath != null) {
-                    Toast.makeText(this, selectedVideoPath, Toast.LENGTH_SHORT).show()
                     val intent = Intent(
                         this,
                         PlayVideoActivity::class.java
